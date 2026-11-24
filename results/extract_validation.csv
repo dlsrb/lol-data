@@ -1,0 +1,9 @@
+metric,value
+match rate: totalGold vs goldEarned,1.0
+match rate: kills vs kills_end,1.0
+match rate: deaths vs deaths_end,1.0
+match rate: assists vs assists_end,1.0
+match rate: wardsPlaced vs wardsPlaced_end,0.9121313197636244
+corr: ccEnemy_ms vs totalTimeCCDealt,0.9999994389123947
+median ratio: ccEnemy_ms / totalTimeCCDealt,1002.3
+players,380750.0

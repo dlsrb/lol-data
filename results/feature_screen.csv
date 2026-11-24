@@ -1,0 +1,13 @@
+lane,metric,value
+TOP,"corr(soloKills, soloDeaths)",-1.0
+TOP,"corr(objPart, Y)",0.07929312726931322
+TOP,"corr(objKA, Y)",0.16692498264161548
+TOP,"corr(objPart, objKA)",0.7787287909923611
+JUNGLE,"corr(soloKills, soloDeaths)",-1.0
+JUNGLE,"corr(objPart, Y)",-0.016999033537050373
+JUNGLE,"corr(objKA, Y)",0.3219233130712236
+JUNGLE,"corr(objPart, objKA)",0.23750565118878333
+MIDDLE,"corr(soloKills, soloDeaths)",-1.0
+MIDDLE,"corr(objPart, Y)",0.030287893578192226
+MIDDLE,"corr(objKA, Y)",0.12574832127027613
+MIDDLE,"corr(objPart, objKA)",0.7350931465907219

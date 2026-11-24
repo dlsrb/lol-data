@@ -1,0 +1,9 @@
+﻿lane,setting,n_features,R2,RMSE,SignAcc_gold,dropped
+TOP,전체 피처,9,0.8754,0.6684,0.9278,
+TOP,|상관|>=0.5 피처만,6,0.8657,0.6938,0.9224,"assists, dmgTaken, roamKA"
+JUNGLE,전체 피처,9,0.8754,0.652,0.8803,
+JUNGLE,|상관|>=0.5 피처만,5,0.8637,0.6818,0.874,"assists, killPart, objKA, wardsPlaced"
+MIDDLE,전체 피처,11,0.8449,0.7282,0.9016,
+MIDDLE,|상관|>=0.5 피처만,5,0.8269,0.7693,0.894,"assists, killPart, objKA, dmgTaken, ccEnemy_ms, roamKA"
+BOTTOM,전체 피처,11,0.7593,0.9092,0.8739,
+BOTTOM,|상관|>=0.5 피처만,6,0.7251,0.9717,0.8583,"spt_killPart, spt_wardsPlaced, spt_wardsKilled, spt_ccEnemy_ms, spt_roamKA"
