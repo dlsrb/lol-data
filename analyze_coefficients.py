@@ -56,12 +56,26 @@ def analyze(lane, path, n_boot):
     return out.reindex(out.coef.abs().sort_values(ascending=False).index)
 
 
+LABELS = {"minionsKilled": "CS (minions)", "jungleMinionsKilled": "Jungle CS", "kills": "Kills",
+          "deaths": "Deaths", "assists": "Assists", "soloKills": "Solo kills", "plates": "Turret plates",
+          "dmgToChamp": "Damage to champions", "dmgTaken": "Damage taken", "killPart": "Kill participation",
+          "objKA": "Objective takedowns", "wardsPlaced": "Wards placed", "wardsKilled": "Wards killed",
+          "ccEnemy_ms": "CC time", "roamKA": "Roaming", "gankKA": "Ganking"}
+
+
+def label(f):
+    for pre, tag in (("adc_", "[ADC] "), ("spt_", "[SPT] ")):
+        if f.startswith(pre):
+            return tag + LABELS.get(f[len(pre):], f[len(pre):])
+    return LABELS.get(f, f)
+
+
 def plot(all_coef, path):
-    fig, axes = plt.subplots(1, 4, figsize=(18, 5), sharex=True)
+    fig, axes = plt.subplots(1, 4, figsize=(20, 5), sharex=True)
     for ax, lane in zip(axes, LANES):
         c = all_coef[all_coef.lane == lane].iloc[::-1]
         colors = ["tab:blue" if v > 0 else "tab:red" for v in c.coef]
-        ax.barh(c.feature, c.coef, color=colors,
+        ax.barh([label(f) for f in c.feature], c.coef, color=colors,
                 xerr=[c.coef - c.ci_low, c.ci_high - c.coef], capsize=2)
         ax.axvline(0, color="gray", lw=0.8)
         ax.set_title(lane)

@@ -11,7 +11,7 @@
   - 행 단위: (게임, 분, 라인) / 값: 블루 - 레드 격차
   - Y = z(골드 격차) + z(XP 격차)   (z는 분별 정규화, BOTTOM은 ADC+SPT 듀오 합산)
   - X : 라인별 목록 (LANE_FEATURES), Y에 쓰인 골드·XP·레벨은 제외
-  - 로밍/갱킹 : 14분까지의 값에서 고정 (이후 한타 관여 배제)
+  - 로밍/갱킹 : 킬 좌표 구역 기준 킬 관여 횟수, 게임 시작부터 그 분까지 누적 (시간 제한 없음)
   - 분할 : 게임 단위 train 80% / test 20%, train 안에서 게임 단위 5-fold
   - 정규화 통계(평균·표준편차)는 train 게임으로만 계산 → test 정보 누수 방지
 
@@ -28,18 +28,17 @@ import pandas as pd
 SEED = 42
 MIN_MINUTE, MAX_MINUTE = 5, 40
 MAX_DURATION_S = 2400
-EARLY_CUT = 14  # 로밍/갱킹 고정 시점(분)
 
 LANE_FEATURES = {
     "TOP": ["minionsKilled", "kills", "deaths", "assists", "soloKills", "plates",
-            "dmgToChamp", "dmgTaken", "roamKA_e14"],
+            "dmgToChamp", "dmgTaken", "roamKA"],
     "JUNGLE": ["jungleMinionsKilled", "kills", "deaths", "assists", "killPart", "objKA",
-               "dmgToChamp", "wardsPlaced", "gankKA_e14"],
+               "dmgToChamp", "wardsPlaced", "gankKA"],
     "MIDDLE": ["minionsKilled", "kills", "deaths", "assists", "soloKills", "killPart", "objKA",
-               "dmgToChamp", "dmgTaken", "ccEnemy_ms", "roamKA_e14"],
+               "dmgToChamp", "dmgTaken", "ccEnemy_ms", "roamKA"],
     "BOTTOM": ["adc_minionsKilled", "adc_kills", "adc_deaths", "adc_dmgToChamp",
                "spt_assists", "spt_deaths", "spt_killPart", "spt_wardsPlaced",
-               "spt_wardsKilled", "spt_ccEnemy_ms", "spt_roamKA_e14"],
+               "spt_wardsKilled", "spt_ccEnemy_ms", "spt_roamKA"],
 }
 
 USECOLS = ["matchId", "minute", "participantId", "teamId", "teamPosition",
@@ -83,19 +82,13 @@ def add_player_features(pm):
     for pos, own in OWN_ZONE.items():
         m = pm.teamPosition == pos
         pm.loc[m, "roamKA"] = pm.loc[m, ZONE_COLS].sum(axis=1) - pm.loc[m, own]
-
-    # 14분 이후에는 14분 값으로 고정
-    pm = pm.sort_values(["matchId", "participantId", "minute"])
-    grp = [pm.matchId, pm.participantId]
-    for c in ["roamKA", "gankKA"]:
-        pm[c + "_e14"] = pm[c].where(pm.minute <= EARLY_CUT).groupby(grp).ffill()
     return pm[pm.minute.between(MIN_MINUTE, MAX_MINUTE)]
 
 
 def lane_diff(pm, position, prefix=""):
     cols = ["totalGold", "xp", "minionsKilled", "jungleMinionsKilled", "kills", "deaths", "assists",
             "soloKills", "killPart", "objKA", "plates", "dmgToChamp", "dmgTaken", "ccEnemy_ms",
-            "wardsPlaced", "wardsKilled", "roamKA_e14", "gankKA_e14"]
+            "wardsPlaced", "wardsKilled", "roamKA", "gankKA"]
     s = pm[pm.teamPosition == position]
     b = s[s.teamId == 100].set_index(["matchId", "minute"])[cols]
     r = s[s.teamId == 200].set_index(["matchId", "minute"])[cols]

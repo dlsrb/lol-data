@@ -72,7 +72,7 @@ def main():
 
     games = pd.read_csv(os.path.join(args.csv_dir, "games.csv.gz"))
     keep, counts = filter_games(games)
-    counts.to_csv(os.path.join(args.results_dir, "filter_counts.csv"), index=False)
+    counts.to_csv(os.path.join(args.results_dir, "filter_counts.csv"), index=False, encoding="utf-8-sig")  # 엑셀에서 한글이 깨지지 않도록
     print(counts.to_string(index=False))
 
     pm = load_minutes(args.csv_dir, set(keep.matchId))
